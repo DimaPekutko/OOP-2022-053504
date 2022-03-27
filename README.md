@@ -13,3 +13,9 @@ sudo service start mongo
 
 npm start
 ```
+
+## Fake data
+
+```bash
+ts-node fake.data # db dump will appear in data.json
+```
