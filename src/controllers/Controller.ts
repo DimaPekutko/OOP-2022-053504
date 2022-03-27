@@ -1,3 +1,1 @@
-export default abstract class Controller {
-    // static auth_user 
-}
+export default abstract class Controller {}

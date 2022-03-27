@@ -1,0 +1,57 @@
+<%- include('header.ejs') %>
+
+    <h2>Banks & Companies</h2>
+    <% for (let i = 0; i < companies.length; i++) { %>
+        <div class="row bg-dark border">
+            <p class="company-name">
+                <%= companies[i].bank.name %> (id: <%= companies[i].bank.id %>)
+            </p>
+            <div class="container">
+                <% for (let j = 0; j < companies[i].companies.length; j++) { %>
+                    <% let company = companies[i].companies[j] %> 
+                    <div class="row company">
+                        <div class="col-sm">
+                            <%= company.id %>
+                        </div>
+                        <div class="col-sm">
+                            <%= company.type %>
+                        </div>
+                        <div class="col-sm">
+                            <%= company.name %>
+                        </div>
+                        <div class="col-sm">
+                            <%= company.address %>
+                        </div>
+                        <div class="col-sm">
+                            <form method="post" action="/companies/salary_request">
+                                <input type="hidden" name="company_id" value="<%= company.id %> ">
+                                <button    
+                                <% if (!is_regular_user) { %>
+                                    hidden
+                                <% } %>  
+                                class="btn btn-info" type="submit">Salary application</button>
+                            </form>
+                        </div>
+                    </div>
+                <% } %>             
+            </div>
+            <form action="/bank/credit_request"
+            <% if (!is_regular_user) { %> 
+                hidden
+            <% } %> 
+            method="post">
+                <h3>Create a credit</h3>
+                <input type="number" name="sum" placeholder="sum"><br>
+                <span>Percent = 5%</span>
+                <select name="duration"> <!--Supplement an id here instead of using 'name'-->
+                    <option value="3">3 months</option>
+                    <option value="6">6 months</option>
+                    <option value="12">12 months</option>
+                    <option value="24">24 months</option>
+                  </select>
+                <button class="btn btn-success">Request credit</button>
+            </form>
+        </div>
+    <% } %> 
+
+<%- include('footer.ejs') %>

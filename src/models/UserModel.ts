@@ -1,34 +1,18 @@
-import USER_ROLES from './entities/Roles';
-import { readFileSync } from "fs"
-import User from "./entities/User"
+import { Schema, model } from 'mongoose';
 
-class UserModel {
-    public users: User[] = [] 
-    constructor() {
-        let data = JSON.parse(String(readFileSync(__dirname+"/../../db/users.json")))
-        let users = data?.users
-        if (users?.length) {
-            let ctx = this
-            users.forEach((user: any) => {
-                ctx.users.push(new User(
-                    user.id,
-                    user.name,
-                    user.email,
-                    user.password
-                ))
-            });
-        }
-    }
-    get(email: string, password: string): User | null {
-        for (let user of this.users) {
-            if (user.email === email && user.password === password) {
-                return user
-            }
-        }
-        return null
-    }
-    find_one(id: number, role: string = USER_ROLES.USER){
-    } 
-}
+import {User, RegularUser} from './entities/User';
 
-export default new UserModel()
+const schema = new Schema<RegularUser>({
+    id: { type: Number, required: true}, 
+    bank_id: { type: Number, required: true},
+    role: { type: String, required: true},
+    email: { type: String, required: true},
+    password: { type: String, required: true},
+    name: { type: String, required: false},
+    phone: { type: Number, required: false},
+    company_id: {type: String, required: false}
+});
+
+const user_model = model<RegularUser>('User', schema);
+
+export default user_model

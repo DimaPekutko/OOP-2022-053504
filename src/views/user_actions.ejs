@@ -1,0 +1,173 @@
+<%- include('header.ejs') %>
+
+<h2>Users actions:</h2>
+<div class="container">
+    <p>CREATE ACCOUNT ACTIONS</p>
+    <div class="row border">
+        <div class="col-sm">
+            Account Id:
+        </div>
+        <div class="col-sm">
+            User Id:
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+    <% for (let i = 0; i < actions.create_acc.length; i++) { %>
+        <div class="row border">
+            <div class="col-sm">
+                <%= actions.create_acc[i].acc_id %> 
+            </div>
+            <div class="col-sm">
+                <%= actions.create_acc[i].user_id %>
+            </div>
+            <div class="col-sm">
+                <form action="/actions/reject/create_acc" method="post">
+                    <input type="hidden" name="id" value=<%= actions.create_acc[i].id %>>
+                    <input type="hidden" name="acc_id" value=<%= actions.create_acc[i].acc_id %>>
+                    <button class="btn btn-danger" type="submit">Reject</button>
+                </form>
+            </div>
+        </div>
+    <% } %> 
+    <br>
+    <p>DELETE ACCOUNT ACTIONS</p>
+    <div class="row border">
+        <div class="col-sm">
+            Account Id:
+        </div>
+        <div class="col-sm">
+            User Id:
+        </div>
+        <div class="col-sm">
+            Remaining money:
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+    <% for (let i = 0; i < actions.delete_acc.length; i++) { %>
+        <div class="row border">
+            <div class="col-sm">
+                <%= actions.delete_acc[i].id %> 
+            </div>
+            <div class="col-sm">
+                <%= actions.delete_acc[i].user_id %>
+            </div>
+            <div class="col-sm">
+                <%= actions.delete_acc[i].remain_money %> $
+            </div>
+            <div class="col-sm">
+                <form action="/actions/reject/delete_acc" method="post">
+                    <input type="hidden" name="id" value=<%= actions.delete_acc[i].id %>>
+                    <button class="btn btn-danger" type="submit">Reject</button>
+                </form>
+            </div>
+        </div>
+    <% } %> 
+    <br>
+    <p>ACCOUNT TRANSFER MONEY ACTIONS</p>
+    <div class="row border">
+        <div class="col-sm">
+            From account Id:
+        </div>
+        <div class="col-sm">
+            To account Id:
+        </div>
+        <div class="col-sm">
+            Sum:
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+    <% for (let i = 0; i < actions.transfer.length; i++) { %>
+        <div class="row border">
+            <div class="col-sm">
+                <%= actions.transfer[i].sender_acc_id %> 
+            </div>
+            <div class="col-sm">
+                <%= actions.transfer[i].receiver_acc_id %>
+            </div>
+            <div class="col-sm">
+                <%= actions.transfer[i].total_sum %>
+            </div>
+            <div class="col-sm">
+                <form action="/actions/reject/tranfer_money" method="post">
+                    <input type="hidden" name="id" value=<%= actions.transfer[i].id %>>
+                    <button class="btn btn-danger" type="submit">Reject</button>
+                </form>
+            </div>
+        </div>
+    <% } %>
+    <br>
+
+    <p>SALARY REQUESTS</p>
+    <div class="row border">
+        <div class="col-sm">
+            User Id:
+        </div>
+        <div class="col-sm">
+            Company Id:
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+    <% for (let i = 0; i < actions.salary_request.length; i++) { %>
+        <div class="row border">
+            <div class="col-sm">
+                <%= actions.salary_request[i].user_id %> 
+            </div>
+            <div class="col-sm">
+                <%= actions.salary_request[i].company_id %>
+            </div>
+            <div class="col-sm">
+                <form action="/actions/accept/salary_request" method="post">
+                    <input type="hidden" name="id" value=<%= actions.salary_request[i].id %>>
+                    <button class="btn btn-success" type="submit">Accept</button>
+                </form>
+            </div>
+        </div>
+    <% } %> 
+    <br>
+
+    <p>CREDIT REQUESTS</p>
+    <div class="row border">
+        <div class="col-sm">
+            User Id:
+        </div>
+        <div class="col-sm">
+            Total sum:
+        </div>
+        <div class="col-sm">
+            Months count:
+        </div>
+        <div class="col-sm">
+            Year percent:
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+    <% for (let i = 0; i < actions.credit_request.length; i++) { %>
+        <div class="row border">
+            <div class="col-sm">
+                <%= actions.credit_request[i].user_id %> 
+            </div>
+            <div class="col-sm">
+                <%= actions.credit_request[i].total_sum %>
+            </div>
+            <div class="col-sm">
+                <%= actions.credit_request[i].months_duration %>
+            </div>
+            <div class="col-sm">
+                <%= actions.credit_request[i].year_percent %>
+            </div>
+            <div class="col-sm">
+                <form action="/actions/accept/credit_request" method="post">
+                    <input type="hidden" name="id" value=<%= actions.credit_request[i].id %>>
+                    <button class="btn btn-success" type="submit">Accept</button>
+                </form>
+            </div>
+        </div>
+    <% } %> 
+</div>
+
+<%- include('footer.ejs') %>

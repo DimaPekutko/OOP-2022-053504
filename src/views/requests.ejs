@@ -1,0 +1,40 @@
+<%- include('header.ejs') %>
+
+    <h2>Requests:</h2>
+    <div class="container">
+        <p>Credit requests</p>
+        <% for (let i = 0; i < credit_requests.length; i++) { %>
+            <div class="row border">
+                <div class="col-sm">
+                    <%= credit_requests[i].id %>
+                </div>
+                <div class="col-sm">
+                    <%= credit_requests[i].months_duration %> months
+                </div>
+                <div class="col-sm">
+                    <%= credit_requests[i].total_sum %> $
+                </div>
+                <div class="col-sm">
+                    year <%= credit_requests[i].year_percent %> %
+                </div>
+            </div>
+        <% } %>
+    </div>
+    <div class="container">
+        <p>Salaries requests</p>
+        <% for (let i = 0; i < salary_requests.length; i++) { %>
+            <div class="row border">
+                <div class="col-sm">
+                    <%= salary_requests[i].id %>
+                </div>
+                <div class="col-sm">
+                    company id: <%= salary_requests[i].company_id %>
+                </div>
+                <div class="col-sm">
+                    <%= salary_requests[i].monthly_sum %> $ per month
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+<%- include('footer.ejs') %>
