@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="wrap container">
+        <div class="row header">
+            <h1>Painter</h1>
+        </div>
+        <hr>
+        <div class="row ui">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Canvas controller panel">
+                    <button id="cnv_cursor_btn" type="button" class="btn btn-light border border-dark">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-cursor" viewBox="0 0 16 16">
+                            <path
+                                d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
+                        </svg>
+                    </button>
+                    <button id="cnv_line_btn" type="button" class="btn btn-light border border-dark">
+                        Line
+                    </button>
+                    <button id="cnv_multi_line_btn" type="button" class="btn btn-light border border-dark">
+                        Multiline
+                    </button>
+                    <button id="cnv_rect_btn" type="button" class="btn btn-light border border-dark">
+                        Rect
+                    <button id="cnv_ellipse_btn" type="button" class="btn btn-light border border-dark">
+                        Ellipse
+                    </button>
+                    <button id="cnv_polygon_btn" type="button" class="btn btn-light border border-dark">
+                        Polygon
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="sidebar col-2">
+                <div class="row">
+                    <p>
+                        <b>Configuration:</b>
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="color" id="cnv_brush_color_input" class="form-control form-control-color" name="" id="">
+                        <span>Brash color</span>
+                    </div>
+                    <div class="col">
+                        <input type="color" id="cnv_fill_color_input" class="form-control form-control-color" name="" id="">
+                        <span>Fill color</span>
+                    </div>
+                    <div class="col">
+                        <input type="number" id="cnv_brush_size_input" class="form-control form-control-color" name="" id="">
+                        <span>Stroke size</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <canvas id="paint_canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/systemjs/dist/s.js"></script>
+    <script src="node_modules/systemjs/dist/extras/named-register.min.js"></script>
+    <script src="dist/index.js"></script>
+    <script type="module">
+        System.import('index'); 
+    </script>
+</body>
+
+</html>

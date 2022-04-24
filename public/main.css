@@ -1,0 +1,18 @@
+body {
+    background: linear-gradient(90deg, black, purple, indigo);
+    color: whitesmoke;
+    min-height: 100vh;
+}
+
+#paint_canvas {
+    width: 100%;
+    min-height: 75vh;
+    background: whitesmoke;
+    border: 3px solid black;
+    border-radius: 10px;
+    opacity: 0.9;
+}
+
+.sidebar input {
+    /* width: 30%; */
+}

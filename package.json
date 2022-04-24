@@ -1,0 +1,25 @@
+{
+  "name": "oop-univer-paint",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DimaPekutko/oop-univer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DimaPekutko/oop-univer/issues"
+  },
+  "homepage": "https://github.com/DimaPekutko/oop-univer#readme",
+  "devDependencies": {
+    "@types/systemjs": "^6.1.1",
+    "systemjs": "^6.12.1"
+  }
+}

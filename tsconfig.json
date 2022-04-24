@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": "src",
+    "outDir": "dist",
+    "outFile": "dist/index.js",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "esModuleInterop": true,
+    "module": "system",
+    "alwaysStrict": true,
+    // "resolveJsonModule": true,
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "paths": {}
+  }
+}
