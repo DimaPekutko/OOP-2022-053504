@@ -3,7 +3,6 @@ import { Coords } from '../Coords';
 export enum PAINT_MODES {
   view = 1,
   draw,
-  filling
 }
 
 export class CanvasState {
@@ -12,7 +11,8 @@ export class CanvasState {
 
   _fill_color: string = ""
 
-  _is_mouse_pressed: boolean = false;
+  _is_mouse_pressed: boolean = false
+  _is_selection_now: boolean = false
   _last_draw_coords: Coords | null = null
 
   _paint_mode: PAINT_MODES = PAINT_MODES.draw
@@ -33,6 +33,10 @@ export class CanvasState {
 
   public set_mouse_pressed(status: boolean) {
     this._is_mouse_pressed = status;
+  }
+
+  public set_selection(status: boolean) {
+    this._is_selection_now = status
   }
 
   public set_last_coords(coords: Coords | null) {

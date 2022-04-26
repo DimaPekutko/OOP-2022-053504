@@ -7,7 +7,20 @@ const main = () => {
 }
 
 
+// function download(filename: string, text: string) {
+//     var element = document.createElement('a');
+//     element.setAttribute('href', 'data:json/json;charset=utf-8,' + encodeURIComponent(text));
+//     element.setAttribute('download', filename);
+  
+//     element.style.display = 'none';
+//     document.body.appendChild(element);
+  
+//     element.click();
+  
+//     document.body.removeChild(element);
+// }
 
+// // download("some.json", '{"hello": 2}')
 
 
 let last_x: any = null, last_y: any = null

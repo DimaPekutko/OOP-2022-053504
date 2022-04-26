@@ -15,7 +15,7 @@ export class PolygonShape extends VertexShape {
         }
         else {
             this._vertexes.pop()
-            head_ver = this._vertexes[0]
+            head_ver = {x: this._vertexes[0].x, y: this._vertexes[0].y}
         }
         this._vertexes.push(ver)
         this._vertexes.push(head_ver)

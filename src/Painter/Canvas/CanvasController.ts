@@ -1,8 +1,9 @@
+import { ComplexShape } from './../Shape/ComplexShape/ComplexShape';
+import { IShapeGrid } from './../Shape/IShapeGrid';
 import { ShapesList } from '../Shape/ShapesList';
 import { LineShapeFactory } from './../Shape/VertexShape/LineShape/LineShapeFactory';
 import { ShapeFactory } from 'Painter/Shape/ShapeFactory';
 import { Shape } from 'Painter/Shape/Shape';
-import { LineShape } from './../Shape/VertexShape/LineShape/LineShape';
 import { Coords } from '../Coords';
 import { CanvasState, PAINT_MODES } from './CanvasState';
 import { VertexShape } from 'Painter/Shape/VertexShape/VertexShape';
@@ -15,11 +16,13 @@ export class CanvasController {
     private _ctx: CanvasRenderingContext2D
     private _shape_factory: ShapeFactory
     private _shapes: ShapesList
+    private _selected_shapes: ShapesList
     private _preview_shape: Shape | null = null
 
     constructor(cnv: any) {
         this.state = new CanvasState()        
         this._shapes = new ShapesList()
+        this._selected_shapes = new ShapesList()
         this._shape_factory = new LineShapeFactory()
         this._ctx = cnv?.getContext("2d")
         this._cnv = cnv
@@ -27,6 +30,23 @@ export class CanvasController {
         this._cnv.width = this._cnv.clientWidth
         this._cnv.height = this._cnv.clientHeight
         this.clear_canvas()
+    }
+
+    public get_selected_shapes(): Shape[] {
+        let ret = this._selected_shapes.get_shapes()
+        return ret
+    }
+
+    public gen_complex_shape_from_selected(): ComplexShape {
+        let shapes = this._selected_shapes.get_shapes()
+        const shape = new ComplexShape(
+            {x: 0, y: 0},
+            this.state._fill_color,
+            this.state._brush_color,
+            this.state._brush_size,
+        )
+        shape.set_internal_shapes(shapes)
+        return shape
     }
 
     public set_shape_factory(factory: ShapeFactory) {
@@ -57,37 +77,49 @@ export class CanvasController {
         }
     }
     
-    private _draw_shape(shape: Shape, is_preview: boolean = false) {
+    private _draw_shape_grid(shape: IShapeGrid, is_selected: boolean = false) {
         const c = this._ctx
-        c.globalAlpha = is_preview ? 0.5 : 1
-        const bg_color = shape.get_bg_color()
-        c.strokeStyle = shape.get_stroke_color()
-        c.lineWidth = shape.get_stroke_szie()
+        const vertexes = shape.get_grid_vertexes()
+        c.strokeStyle = is_selected ? "red" : "blue"
+        c.lineWidth = 3
+        c.setLineDash([10])
         c.beginPath()
-        if (shape instanceof VertexShape) {
-            const vertexes = shape.get_vertexes()
-            let ver: Coords = {x:0,y:0}
-            for (let i = 0; i < vertexes.length; i++) {
-                ver = vertexes[i]
-                if (i == 0) {
-                    c.moveTo(ver.x, ver.y)
-                }
-                else {
-                    c.lineTo(ver.x, ver.y)
-                }
+        let ver: Coords = {x:0,y:0}
+        for (let i = 0; i < vertexes.length; i++) {
+            ver = vertexes[i]
+            if (i == 0) {
+                c.moveTo(ver.x, ver.y)
             }
-            c.moveTo(ver.x, ver.y)
-            c.closePath()
-        }
-        else if (shape instanceof ArcShape) {
-            const pos = shape.get_pos()
-            const radii = shape.get_radii()
-            if (pos !== null) {
-                c.beginPath()
-                c.ellipse(pos.x, pos.y, radii[0], radii[1], 0, 0, 2*Math.PI);
-                c.closePath()
+            else {
+                c.lineTo(ver.x, ver.y)
             }
         }
+        c.moveTo(ver.x, ver.y)
+        c.closePath()
+        c.stroke()
+        c.setLineDash([])
+    }
+
+    private _draw_vertex_shape(shape: VertexShape, is_preview: boolean = false) {
+        const c = this._ctx
+        const bg_color = shape.get_bg_color()
+        const vertexes = shape.get_vertexes()
+        let ver: Coords = {x:0,y:0}
+        c.globalAlpha = is_preview ? 0.5 : 1
+        c.strokeStyle = shape.get_stroke_color()
+        c.lineWidth = shape.get_stroke_size()
+        c.beginPath()
+        for (let i = 0; i < vertexes.length; i++) {
+            ver = vertexes[i]
+            if (i == 0) {
+                c.moveTo(ver.x, ver.y)
+            }
+            else {
+                c.lineTo(ver.x, ver.y)
+            }
+        }
+        c.moveTo(ver.x, ver.y)
+        c.closePath()
         if (bg_color && shape.to_fill) {
             c.fillStyle = bg_color
             c.fill()
@@ -96,8 +128,44 @@ export class CanvasController {
         c.globalAlpha = 1
     }
 
-    public mouse_down(cnv_x: number, cnv_y: number) {
-        const pos = this._global_pos_to_local({x:cnv_x, y:cnv_y})
+    private _draw_arc_shape(shape: ArcShape, is_preview: boolean = false) {
+        const c = this._ctx
+        const bg_color = shape.get_bg_color()
+        c.globalAlpha = is_preview ? 0.5 : 1
+        c.strokeStyle = shape.get_stroke_color()
+        c.lineWidth = shape.get_stroke_size()
+        const pos = shape.get_pos()
+        const radii = shape.get_radii()
+        if (pos !== null) {
+            c.beginPath()
+            c.ellipse(pos.x, pos.y, radii[0], radii[1], 0, 0, 2*Math.PI);
+            c.closePath()
+        }
+        if (bg_color && shape.to_fill) {
+            c.fillStyle = bg_color
+            c.fill()
+        }
+        c.stroke()
+        c.globalAlpha = 1
+    } 
+
+    private _draw_shape(shape: Shape, is_preview: boolean = false) {
+        if (shape instanceof VertexShape) {
+            this._draw_vertex_shape(shape, is_preview)
+        }
+        else if (shape instanceof ArcShape) {
+            this._draw_arc_shape(shape, is_preview)
+        }
+        
+        let is_selected = false
+        if (this._selected_shapes.get_shapes().indexOf(shape) >= 0) {
+            is_selected = true
+        }
+        this.state._paint_mode == PAINT_MODES.view ? this._draw_shape_grid(shape, is_selected) : null
+
+    }
+
+    private _new_shape(pos: Coords) {
         // generate new preview shape
         if (this._preview_shape === null) {
             this._preview_shape = this._shape_factory.create(
@@ -131,20 +199,63 @@ export class CanvasController {
         this._render()
     }
 
+    private _hit_shape(pos: Coords): Shape | null {
+        let shapes = this._shapes.get_shapes()
+        for (let i = shapes.length-1; i >= 0; i--) {
+            this._draw_shape_grid(shapes[i])
+            if (this._ctx.isPointInPath(pos.x, pos.y)) {
+                return shapes[i]
+            }
+        }
+        return null
+    }
+
+    public mouse_down(cnv_x: number, cnv_y: number) {
+        const pos = this._global_pos_to_local({x:cnv_x, y:cnv_y})
+        const paint_mode = this.state._paint_mode
+        if (paint_mode == PAINT_MODES.draw) {
+            this._new_shape(pos)
+        }
+        else if (paint_mode == PAINT_MODES.view) {
+            const hitted_shape = this._hit_shape(pos)
+            if (hitted_shape !== null) {
+                this._selected_shapes.push(hitted_shape)
+            } 
+        }
+    }
+
     public mouse_up(cnv_x: number, cnv_y: number) {
+        const paint_mode = this.state._paint_mode
+        if (paint_mode == PAINT_MODES.view && !this.state._is_selection_now) {
+            while(this._selected_shapes.pop()) {} 
+        }
         this._render()
     }
 
     public mouse_move(cnv_x: number, cnv_y: number) {
         const pos = this._global_pos_to_local({x:cnv_x, y:cnv_y})
-        if (this._preview_shape !== null) {
-            if (this._preview_shape instanceof VertexShape) {
-                this._preview_shape.pop_vertex()
-                this._preview_shape.push_vertex({x: pos.x, y: pos.y})
+        const paint_mode = this.state._paint_mode
+        if (paint_mode == PAINT_MODES.draw) {
+            if (this._preview_shape !== null) {
+                if (this._preview_shape instanceof VertexShape) {
+                    this._preview_shape.pop_vertex()
+                    this._preview_shape.push_vertex({x: pos.x, y: pos.y})
+                }
+                else if (this._preview_shape instanceof ArcShape) {
+                    this._preview_shape.set_proportions_by_pos(pos)
+                }
             }
-            else if (this._preview_shape instanceof ArcShape) {
-                this._preview_shape.set_proportions_by_pos(pos)
-            }
+        }
+        else if (
+            paint_mode == PAINT_MODES.view && 
+            this._selected_shapes.get_shapes().length > 0 &&
+            !this.state._is_selection_now
+        ) {
+            let shapes = this._selected_shapes.get_shapes()
+            shapes[0].set_pos({
+                x: pos.x,
+                y: pos.y
+            })
         }
         this._render()
     }
@@ -158,95 +269,9 @@ export class CanvasController {
     }
 
     public undo_action() {
-        this._shapes.pop()
-        this._render()
+        if (this.state._paint_mode == PAINT_MODES.draw) {
+            this._shapes.pop()
+            this._render()
+        }
     }
-
-    // private _rgb_to_hex(r: number, g: number, b: number) {
-    //     if (r > 255 || g > 255 || b > 255)
-    //         throw "Invalid color component";
-    //     return ((r << 16) | (g << 8) | b).toString(16);
-    // }
-
-    // private _draw_figure(pos: Coords) {
-    //     const c = this._ctx
-    //     c.strokeStyle = this.state._brush_color
-    //     c.lineWidth = this.state._brush_size
-    //     if (this.state._last_draw_coords) {
-    //         const last_pos = this.state._last_draw_coords
-    //         c.beginPath()
-    //         c.moveTo(last_pos.x, last_pos.y)
-    //         c.lineTo(pos.x, pos.y)
-    //         c.closePath()
-    //         c.stroke()
-    //     }
-    //     this.state.set_last_coords(pos)
-    // }
-
-    // private _get_hex_by_pixel(pos: Coords) {
-    //     const c = this._ctx
-    //     let p = c.getImageData(pos.x, pos.y, 1, 1).data; 
-    //     let hex = "#"+this._rgb_to_hex(p[0], p[1], p[2])
-    //     return hex
-    // }
-
-    // private _fill_figure(pos: Coords) {
-    //     // this._recursive_fill(pos, "blue", this._get_hex_by_pixel(pos))
-    //     type Pixel = {
-    //         clr: string,
-    //         pos: Coords
-    //     }
-    //     let new_clr = "blue"
-    //     let hex: string = this._get_hex_by_pixel(pos)
-    //     let stack: Pixel[] = []
-    //     stack.push({clr:hex,pos:pos})
-    //     while(stack.length > 0) {
-    //         let p = stack.pop()
-    //         if (p == undefined) break
-    //         let left_x = p.pos.x
-    //         let right_x = p.pos.x
-    //         while (left_x >= 0 && this._get_hex_by_pixel({x: left_x, y: p.pos.y}) == p.clr) 
-    //             left_x--
-    //         while (right_x < this._cnv.width  && this._get_hex_by_pixel({x: left_x, y: p.pos.y}) == p.clr) 
-    //             right_x++
-    //         left_x++
-    //         right_x--
-    //         while (left_x < this._cnv.width && this._get_hex_by_pixel({x: left_x, y: p.pos.y}) == p.clr) {
-    //             this._ctx.fillStyle = new_clr
-    //             this._ctx.fillRect(left_x,p.pos.y,1,1)
-    //             let new_pos_top = {x:left_x,y:p.pos.y-1}
-    //             let new_pos_down = {x:left_x,y:p.pos.y+1}
-    //             if (this._get_hex_by_pixel(new_pos_top) == p.clr) {
-    //                 stack.push({clr: p.clr, pos:new_pos_top})
-    //             }
-    //             if (this._get_hex_by_pixel(new_pos_down) == p.clr) {
-    //                 stack.push({clr: p.clr, pos:new_pos_down})
-    //             }
-    //             left_x++
-    //         }
-    //     }
-    // }
-
-    // private _on_mouse_move(e: MouseEvent) {
-    //     const pos: Coords = this._global_pos_to_local({x: e.clientX, y: e.clientY})
-    //     if (this.state._is_mouse_pressed && this.state._paint_mode == PAINT_MODES.draw) {
-    //         this._draw_figure(pos)
-    //     }
-    // }
-    // private _on_mouse_down(e: MouseEvent) {
-    //     const pos: Coords = this._global_pos_to_local({x: e.clientX, y: e.clientY})
-    //     if (this.state._paint_mode == PAINT_MODES.view) {
-    //         this._fill_figure(pos)
-    //     }
-    //     else {
-    //         // let rect = new RectShape()
-    //         // rect.set_pos({x: pos.x, y: pos.y})
-    //         // rect.draw(this._ctx)
-    //     }
-    //     this.state.set_mouse_pressed(true)
-    // }
-    // private _on_mouse_up(e: MouseEvent) {
-    //     this.state.set_mouse_pressed(false)
-    //     this.state.set_last_coords(null)
-    // }
 }

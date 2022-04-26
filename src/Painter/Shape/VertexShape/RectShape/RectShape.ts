@@ -20,7 +20,7 @@ export class RectShape extends VertexShape {
             this._vertexes.push({x:head_ver.x, y: ver.y})
             this._vertexes.push(ver)
             this._vertexes.push({x:ver.x, y:head_ver.y})
-            this._vertexes.push(head_ver)
+            this._vertexes.push({x: head_ver.x, y: head_ver.y})
         }
     }
 }
