@@ -31,7 +31,12 @@ export abstract class ArcShape extends Shape implements IShapeGrid {
         return this._grid_vertexes
     }
 
-    set_proportions_by_pos(pos: Coords) {
+    set_radii(xrad: number, yrad: number): void {
+        this._x_radius = xrad
+        this._y_radius = yrad
+    }
+
+    set_proportions_by_pos(pos: Coords): void {
         let head_pos = this._pos
         if (head_pos) {
             this._x_radius = Math.abs(head_pos.x-pos.x)

@@ -35,6 +35,10 @@ export abstract class VertexShape extends Shape implements IShapeGrid {
         return this._grid_vertexes
     }
     
+    set_vertexes(vertexes: Coords[]): void {
+        this._vertexes = vertexes
+    }
+
     push_vertex(ver: Coords): void {
         if (this._vertexes.length < this.vertexes_count) {
             this._vertexes.push(ver)

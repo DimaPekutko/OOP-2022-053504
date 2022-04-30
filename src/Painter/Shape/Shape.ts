@@ -9,10 +9,14 @@ export abstract class Shape implements IShapeGrid {
     _grid_vertexes: Coords[] = []
 
     constructor(pos: Coords, bg_clr: string, stroke_clr: string, stroke_size: number) {
-        this.set_pos(pos)
-        this.set_bg_color(bg_clr)
-        this.set_stroke_color(stroke_clr)
-        this.set_stroke_size(stroke_size)
+        // this.set_pos(pos)
+        // this.set_bg_color(bg_clr)
+        // this.set_stroke_color(stroke_clr)
+        // this.set_stroke_size(stroke_size)
+        this._pos = pos
+        this._bg_color = bg_clr
+        this._stroke_color = stroke_clr
+        this._stroke_size = stroke_size
     }
     get_grid_vertexes(): Coords[] {
         return [{x: 0, y: 0}]

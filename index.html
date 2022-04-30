@@ -19,7 +19,7 @@
         <hr>
         <div class="row ui">
             <div class="col">
-                <div class="btn-group" role="group" aria-label="Canvas controller panel">
+                <div id="shapes_btn_list" class="btn-group" role="group" aria-label="Canvas controller panel">
                     <button id="cnv_cursor_btn" type="button" class="btn btn-light border border-dark">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-cursor" viewBox="0 0 16 16">
@@ -48,10 +48,12 @@
                     <button id="cnv_new_shape_btn" type="button" class="btn btn-light border border-dark">
                         New shape
                     </button>
-                    <button id="cnv_load_shape_btn" type="button" class="btn btn-light border border-dark">
+                    <button id="cnv_load_shape_btn" onclick="document.getElementById('plugin_load_input').click()" type="button" class="btn btn-light border border-dark">
                         Load plugin
+                        <div class="file_form_wrap" display="none">
+                            <input name="myFile" id="plugin_load_input" type="file">
+                        </div>
                     </button>
-                    <!-- <input name="myFile" class="" type="file"> -->
                 </div>
             </div>
         </div>

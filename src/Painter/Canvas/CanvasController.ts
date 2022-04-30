@@ -1,3 +1,4 @@
+import { ComplexShapeFactory } from './../Shape/ComplexShape/ComplexShapeFactory';
 import { ComplexShape } from './../Shape/ComplexShape/ComplexShape';
 import { IShapeGrid } from './../Shape/IShapeGrid';
 import { ShapesList } from '../Shape/ShapesList';
@@ -67,6 +68,11 @@ export class CanvasController {
 
     private _render() {
         this.clear_canvas()
+
+        if (this.state._paint_mode !== PAINT_MODES.draw) {
+            this._preview_shape = null
+        }
+
         // shapes list render
         for (let shape of this._shapes.get_shapes()) {
             this._draw_shape(shape)
@@ -80,7 +86,7 @@ export class CanvasController {
     private _draw_shape_grid(shape: IShapeGrid, is_selected: boolean = false) {
         const c = this._ctx
         const vertexes = shape.get_grid_vertexes()
-        c.strokeStyle = is_selected ? "red" : "blue"
+        c.strokeStyle = is_selected ? "red" : shape instanceof ComplexShape ? "orange" : "blue"
         c.lineWidth = 3
         c.setLineDash([10])
         c.beginPath()
@@ -147,7 +153,14 @@ export class CanvasController {
         }
         c.stroke()
         c.globalAlpha = 1
-    } 
+    }
+
+    private _draw_complex_shape(shape: ComplexShape, is_preview: boolean = false) {
+        const internal_shapes: Shape[] = shape.get_internal_shapes()
+        for (let i = 0; i < internal_shapes.length; i++) {
+            this._draw_shape(internal_shapes[i], is_preview)
+        }
+    }
 
     private _draw_shape(shape: Shape, is_preview: boolean = false) {
         if (shape instanceof VertexShape) {
@@ -156,12 +169,18 @@ export class CanvasController {
         else if (shape instanceof ArcShape) {
             this._draw_arc_shape(shape, is_preview)
         }
+        else if (shape instanceof ComplexShape) {
+            this._draw_complex_shape(shape, is_preview)
+        }
         
         let is_selected = false
         if (this._selected_shapes.get_shapes().indexOf(shape) >= 0) {
             is_selected = true
         }
-        this.state._paint_mode == PAINT_MODES.view ? this._draw_shape_grid(shape, is_selected) : null
+
+        if (this.state._paint_mode == PAINT_MODES.view) {
+            this._draw_shape_grid(shape, is_selected)
+        }
 
     }
 
@@ -244,6 +263,23 @@ export class CanvasController {
                 else if (this._preview_shape instanceof ArcShape) {
                     this._preview_shape.set_proportions_by_pos(pos)
                 }
+                else if (this._preview_shape instanceof ComplexShape) {
+                    this._preview_shape.set_pos({
+                        x: pos.x,
+                        y: pos.y
+                    })
+                }
+            }
+            else {
+                if (this._shape_factory instanceof ComplexShapeFactory) {
+                    this._preview_shape = this._shape_factory.create(
+                        {x: pos.x, y: pos.y},
+                        this.state._fill_color,
+                        this.state._brush_color,
+                        this.state._brush_size
+                    )
+                    this._preview_shape.set_stroke_size(this.state._brush_size)
+                }
             }
         }
         else if (
@@ -268,10 +304,13 @@ export class CanvasController {
         this._render()
     }
 
+    public redo_action() {
+        this._shapes.redo_shape()
+        this._render()
+    }
+
     public undo_action() {
-        if (this.state._paint_mode == PAINT_MODES.draw) {
-            this._shapes.pop()
-            this._render()
-        }
+        this._shapes.pop()
+        this._render()
     }
 }

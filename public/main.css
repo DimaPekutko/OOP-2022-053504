@@ -4,6 +4,11 @@ body {
     min-height: 100vh;
 }
 
+.file_form_wrap {
+    
+    display: none;
+}
+
 #paint_canvas {
     width: 100%;
     min-height: 75vh;

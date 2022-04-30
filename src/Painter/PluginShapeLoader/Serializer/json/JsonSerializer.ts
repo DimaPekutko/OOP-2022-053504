@@ -1,20 +1,9 @@
-import { SUPPORTED_SHAPES } from './../../PluginsConfig';
+import { SUPPORTED_SHAPES, is_shape_supported } from './../../PluginsConfig';
 import { ArcShape } from 'Painter/Shape/ArcShape/ArcShape';
 import { VertexShape } from 'Painter/Shape/VertexShape/VertexShape';
 import { Shape } from 'Painter/Shape/Shape';
 import { ComplexShape } from './../../../Shape/ComplexShape/ComplexShape';
 export abstract class JsonSerializer {
-    private static dist: object = {}
-
-    private static _is_shape_supported (shape: Shape): boolean {
-        let construct: any = shape.constructor
-        let class_names = SUPPORTED_SHAPES.map((element)=>{
-            let cls: any = element
-            return cls.name
-        })
-        let ret = class_names.indexOf(construct.name) >= 0 || shape instanceof ComplexShape
-        return ret
-    }
 
     private static _set_shape_fields(obj: any, shape: Shape) {
         let construct: any = shape.constructor
@@ -61,7 +50,7 @@ export abstract class JsonSerializer {
     }
 
     private static _visit_shape(shape: Shape): object {
-        if (this._is_shape_supported(shape)) {
+        if (is_shape_supported(shape)) {
             if (shape instanceof ComplexShape) {
                 return this._visit_complex_shape(shape)
             }
