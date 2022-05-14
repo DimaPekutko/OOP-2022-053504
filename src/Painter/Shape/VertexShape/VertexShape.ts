@@ -2,7 +2,7 @@ import { Coords } from "Painter/Coords";
 import { IShapeGrid } from "../IShapeGrid";
 import { Shape } from "../Shape";
 
-export abstract class VertexShape extends Shape implements IShapeGrid {
+export abstract class VertexShape extends Shape {
     abstract readonly vertexes_count: number
     protected _vertexes: Coords[] = []
     _grid_vertexes: Coords[] = []

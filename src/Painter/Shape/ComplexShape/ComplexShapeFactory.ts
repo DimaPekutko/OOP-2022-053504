@@ -5,7 +5,6 @@ import { Shape } from "Painter/Shape/Shape";
 import { ShapeFactory } from "Painter/Shape/ShapeFactory";
 import { Coords } from 'Painter/Coords';
 import { ComplexShape } from "./ComplexShape";
-import { deep_copy } from 'utils/utils';
 import { get_supported_class_names } from 'Painter/PluginShapeLoader/PluginsConfig';
 
 

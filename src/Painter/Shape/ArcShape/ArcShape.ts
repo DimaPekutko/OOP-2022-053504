@@ -2,7 +2,7 @@ import { IShapeGrid } from './../IShapeGrid';
 import { Coords } from "Painter/Coords";
 import { Shape } from "Painter/Shape/Shape";
 
-export abstract class ArcShape extends Shape implements IShapeGrid {
+export abstract class ArcShape extends Shape {
     protected _x_radius: number = 20
     protected _y_radius: number = 20
     _grid_vertexes: Coords[] = []

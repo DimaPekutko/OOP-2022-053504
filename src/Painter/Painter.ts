@@ -140,7 +140,7 @@ export class Painter {
             const last_btn_classes: any = shapes_btn_list.lastElementChild?.className
             const btn = document.createElement("button")
             btn.className = last_btn_classes
-            btn.textContent = name
+            btn.textContent = "External plugin"
             btn.name = name
             btn.addEventListener("click", this._on_plugin_shape_btn_click.bind(this))
             shapes_btn_list.appendChild(btn)
@@ -160,7 +160,7 @@ export class Painter {
             let shape = this._plugin_loader?.load(plugin.name, source)
             if (shape instanceof ComplexShape) {
                 let complex_factory = new ComplexShapeFactory(shape.get_internal_shapes())
-                this._create_plugin_shape_btn_handler(plugin_name, complex_factory)
+                this._create_plugin_shape_btn_handler(plugin_name+Date.now(), complex_factory)
             }
         })
     }
